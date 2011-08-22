@@ -1,9 +1,11 @@
 * Apply GPL 3.0
 
+* Reduce startup time (load the app list asychronously)
+
 * Expose more app properties
 
 * Use Fragments API for optimal tablet support
 
 * Search for apps
 
-* Bettar app list suitable for large number of apps (perhaps a-la contacts list)
+* Better app list suitable for large number of apps (perhaps a-la contacts list)
