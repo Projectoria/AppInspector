@@ -32,6 +32,8 @@
          </activity>
             
          <activity android:name=".AppDetails" android:label="UNKNOWN" />
+         
+         <activity android:name=".About" android:label="About App Inspector" />
 
     </application>
 </manifest>

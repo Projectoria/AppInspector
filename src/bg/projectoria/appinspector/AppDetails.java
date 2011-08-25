@@ -32,6 +32,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SimpleAdapter;
 
 public class AppDetails extends ListActivity {
@@ -88,4 +90,26 @@ public class AppDetails extends ListActivity {
     	e.put("value", value);
     	entries.add(e);
     }
+    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu
+			.add(Menu.CATEGORY_CONTAINER,
+					About.MENU_ABOUT,
+					Menu.FIRST,
+					"About")
+					.setIcon(android.R.drawable.ic_menu_info_details);
+		return true;
+	}
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case About.MENU_ABOUT:
+			startActivity(new Intent(this, About.class));
+			return true;
+		}
+		return false;
+	}
 }

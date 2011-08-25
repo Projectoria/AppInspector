@@ -28,6 +28,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -54,6 +56,28 @@ public class Main extends ListActivity {
         ListAdapter adapter = new AppAdapter(apps);
         setListAdapter(adapter);
     }
+    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu
+			.add(Menu.CATEGORY_CONTAINER,
+					About.MENU_ABOUT,
+					Menu.FIRST,
+					"About")
+					.setIcon(android.R.drawable.ic_menu_info_details);
+		return true;
+	}
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case About.MENU_ABOUT:
+			startActivity(new Intent(this, About.class));
+			return true;
+		}
+		return false;
+	}
     
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
