@@ -20,9 +20,15 @@ package bg.projectoria.appinspector;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 
 public class About extends Activity {
+	
+	private static final String TAG = "About";
 	
 	static final int MENU_ABOUT = Menu.FIRST + 1000;
 	
@@ -30,5 +36,21 @@ public class About extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.about);
+		
+		PackageManager pman = getPackageManager();
+		CharSequence appName = pman.getApplicationLabel(getApplicationInfo());
+		CharSequence appVersion = "";
+		try {
+			appVersion = pman
+				.getPackageInfo(getPackageName(), 0)
+				.versionName;
+		}
+		catch (NameNotFoundException e) {
+			// This really shouldn't happen since we're looking for the package
+			// of the currently running app.
+			Log.e(TAG, "Can't find my own package", e);
+		}
+		String appFull = appName + " " + appVersion;
+		((TextView) findViewById(R.id.name_and_version)).setText(appFull);
 	}
 }
