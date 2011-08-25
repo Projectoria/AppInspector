@@ -86,20 +86,26 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="promo image for Android Market by"
+			android:text="promo image for Android Market"
+			/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="designed by"
 			/>
 			
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Find Me"
+			android:text="Wojciech Walczyszyn"
 			/>
 		
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:autoLink="all"
-			android:text="&lt;and put my address here&gt;"
+			android:text="http://wwalczyszyn.deviantart.com"
 			/>
 			
 		</LinearLayout>
