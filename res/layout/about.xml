@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2011  Projectoria Ltd.
+ * This file is part of App Inspector.
+ *
+ * App Inspector is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Foobar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:fadingEdge="vertical">
+	
+<LinearLayout 
+	android:orientation="vertical"
+	android:gravity="center_horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+		
+	<include layout="@layout/spacer" />
+	
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/icon" />
+			
+	<TextView
+		android:id="@+id/name_and_version"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge" 
+		android:text="App Inspector x.x" />
+		
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Copyright © 2011 Projectoria Ltd." />
+		
+	<include layout="@layout/spacer" />
+	
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center_horizontal">
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="written by"
+			/>
+			
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Kaloian Doganov"
+			/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="&lt;doganov@projectoria.bg&gt;"
+			/>
+			
+		</LinearLayout>
+		
+	<include layout="@layout/spacer" />
+		
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center_horizontal">
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="promo image for Android Market by"
+			/>
+			
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Find Me"
+			/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="&lt;and put my address here&gt;"
+			/>
+			
+		</LinearLayout>
+	
+	<include layout="@layout/spacer" />	
+	
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_marginLeft="15dp"
+		android:layout_marginRight="15dp">
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="5dp"
+			android:text="@string/about_copying_p1"  />
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="5dp"
+			android:text="@string/about_copying_p2" />
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="web"
+			android:text="@string/about_copying_p3" />
+			
+		</LinearLayout>
+		
+		<include layout="@layout/spacer" />
+    
+</LinearLayout>
+</ScrollView>

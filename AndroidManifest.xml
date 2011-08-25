@@ -33,7 +33,10 @@
             
          <activity android:name=".AppDetails" android:label="UNKNOWN" />
          
-         <activity android:name=".About" android:label="About App Inspector" />
+         <activity
+         	android:name=".About"
+         	android:label="About App Inspector"
+         	android:theme="@android:style/Theme.Light"/>
 
     </application>
 </manifest>
