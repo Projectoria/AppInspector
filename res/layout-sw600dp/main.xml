@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+    
+    <fragment
+        android:id="@+id/apps_list"
+        android:name="bg.projectoria.appinspector.AppsListFragment"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1" />
+    
+    <fragment
+        android:id="@+id/app_details"
+        android:name="bg.projectoria.appinspector.AppDetailsFragment"
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
+    
+</LinearLayout>

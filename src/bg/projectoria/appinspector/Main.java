@@ -18,108 +18,44 @@
 
 package bg.projectoria.appinspector;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import android.app.ListActivity;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import bg.projectoria.appinspector.AppsListFragment.OnAppSelectedListener;
 
-public class Main extends ListActivity {
+public class Main extends FragmentActivity implements OnAppSelectedListener{
 	
-	PackageManager pman = null;
+	private boolean isDual = false;
+	private AppDetailsFragment detailsFragment = null;
+	private AppsListFragment appsFragment = null;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
+        setContentView(R.layout.main);
         
-        pman = getPackageManager();
+        appsFragment = (AppsListFragment) getSupportFragmentManager().findFragmentById(R.id.apps_list);
+        detailsFragment = (AppDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.app_details);
         
-        List<ApplicationInfo> apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
-        Collections.sort(apps, new LabelComparator());
+        View detailsView = findViewById(R.id.app_details);
         
-        ListAdapter adapter = new AppAdapter(apps);
-        setListAdapter(adapter);
+        if(detailsView != null && detailsView.getVisibility() == View.VISIBLE){
+        	isDual = true;
+        }
+        
     }
     
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu
-			.add(Menu.CATEGORY_CONTAINER,
-					About.MENU_ABOUT,
-					Menu.FIRST,
-					"About")
-					.setIcon(android.R.drawable.ic_menu_info_details);
-		return true;
-	}
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case About.MENU_ABOUT:
-			startActivity(new Intent(this, About.class));
-			return true;
-		}
-		return false;
-	}
-    
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-    	ApplicationInfo app = (ApplicationInfo) l.getItemAtPosition(position);
-    	Uri uri = (new Uri.Builder())
-    		.scheme("app-inspector")
-    		.authority(app.packageName)
-    		.build();
-    	
-    	Intent i = new Intent(this, AppDetails.class);
-    	i.setData(uri);
-    	startActivity(i);
-    }
-    
-    private class AppAdapter extends ArrayAdapter<ApplicationInfo> {
-
-		public AppAdapter(List<ApplicationInfo> apps) {
-			super(Main.this, R.layout.app_item, R.id.label, apps);
+	public void onAppSelected(Uri uri) {
+		if(!isDual){
+			Intent i = new Intent(this, AppDetails.class);
+			i.setData(uri);
+			startActivity(i);
 		}
 		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = super.getView(position, convertView, parent);
-			ApplicationInfo app = getItem(position);
-			
-			ImageView icon = (ImageView) view.findViewById(R.id.icon);
-			TextView label = (TextView) view.findViewById(R.id.label);
-			icon.setImageDrawable(pman.getApplicationIcon(app));
-			label.setText(pman.getApplicationLabel(app));
-			return view;
-		}
-    	
-    }
-    
-    private class LabelComparator implements Comparator<ApplicationInfo> {
-
-		@Override
-		public int compare(ApplicationInfo app1, ApplicationInfo app2) {
-			String label1 = pman.getApplicationLabel(app1).toString();
-			String label2 = pman.getApplicationLabel(app2).toString();
-			return label1.compareTo(label2);
-		}
-    	
-    }
-}
+		detailsFragment.showDetails(uri);
+	}
+}    
