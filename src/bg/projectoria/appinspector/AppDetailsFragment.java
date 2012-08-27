@@ -12,11 +12,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class AppDetailsFragment extends ListFragment {
+import com.actionbarsherlock.app.SherlockListFragment;
+
+public class AppDetailsFragment extends SherlockListFragment {
 
 	private static final String TAG = "AppDetails";
 	
@@ -25,24 +27,26 @@ public class AppDetailsFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		this.setListShownNoAnimation(true);
 		
-        Intent i = getActivity().getIntent();
+		this.setListShownNoAnimation(true);
+		getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
+
+        Intent i = getSherlockActivity().getIntent();
         Uri uri = i.getData();
         
         if(uri != null)
         	showDetails(uri);
     }
-		
+	
 	public void showDetails(Uri uri) {
-		if(getActivity() == null)
+		if(getSherlockActivity() == null)
 			return;
 		
 		if(!entries.isEmpty())
 			entries.clear();
 		
 		Log.d(TAG, "uri = " + uri);
-		PackageManager pman = getActivity().getPackageManager();
+		PackageManager pman = getSherlockActivity().getPackageManager();
 		ApplicationInfo app = null;
 		PackageInfo pkg = null;
 		String pkgName = uri.getAuthority();
@@ -68,7 +72,7 @@ public class AppDetailsFragment extends ListFragment {
 		entry("Source dir", app.sourceDir);
 		entry("Data dir", app.dataDir);
 		
-		setListAdapter(new SimpleAdapter(getActivity(),
+		setListAdapter(new SimpleAdapter(getSherlockActivity(),
 				entries,
 				android.R.layout.simple_list_item_2,
 				new String[] {"key", "value"},
@@ -82,25 +86,4 @@ public class AppDetailsFragment extends ListFragment {
     	entries.add(e);
     }	
 	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//		menu
-//			.add(Menu.CATEGORY_CONTAINER,
-//					About.MENU_ABOUT,
-//					Menu.FIRST,
-//					"About")
-//					.setIcon(android.R.drawable.ic_menu_info_details);
-//		return true;
-//	}
-//    
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case About.MENU_ABOUT:
-//			startActivity(new Intent(this, About.class));
-//			return true;
-//		}
-//		return false;
-//	}	
 }

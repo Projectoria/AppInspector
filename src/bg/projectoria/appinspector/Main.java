@@ -21,15 +21,17 @@ package bg.projectoria.appinspector;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import bg.projectoria.appinspector.AppsListFragment.OnAppSelectedListener;
 
-public class Main extends FragmentActivity implements OnAppSelectedListener{
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class Main extends SherlockFragmentActivity implements OnAppSelectedListener{
 	
 	private boolean isDual = false;
 	private AppDetailsFragment detailsFragment = null;
-	private AppsListFragment appsFragment = null;
 	
     /** Called when the activity is first created. */
     @Override
@@ -37,7 +39,6 @@ public class Main extends FragmentActivity implements OnAppSelectedListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        appsFragment = (AppsListFragment) getSupportFragmentManager().findFragmentById(R.id.apps_list);
         detailsFragment = (AppDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.app_details);
         
         View detailsView = findViewById(R.id.app_details);
@@ -45,15 +46,40 @@ public class Main extends FragmentActivity implements OnAppSelectedListener{
         if(detailsView != null && detailsView.getVisibility() == View.VISIBLE){
         	isDual = true;
         }
-        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	menu
+    	.add(Menu.CATEGORY_CONTAINER,
+    			About.MENU_ABOUT,
+    			Menu.FIRST,
+    			"About")
+    			.setIcon(android.R.drawable.ic_menu_info_details)
+    			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case About.MENU_ABOUT:
+    		startActivity(new Intent(this, About.class));
+    		return true;
+    	}
+    	return false;
     }
     
 	@Override
-	public void onAppSelected(Uri uri) {
+	public void onAppSelected(Uri uri, boolean savedState) {
 		if(!isDual){
-			Intent i = new Intent(this, AppDetails.class);
-			i.setData(uri);
-			startActivity(i);
+			if(!savedState) {
+				Intent i = new Intent(this, AppDetails.class);
+				i.setData(uri);
+				startActivity(i);
+			}
+			return;
 		}
 		
 		detailsFragment.showDetails(uri);

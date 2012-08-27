@@ -18,15 +18,16 @@
 
 package bg.projectoria.appinspector;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
-public class About extends Activity {
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class About extends SherlockActivity {
 	
 	private static final String TAG = "About";
 	

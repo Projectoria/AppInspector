@@ -18,19 +18,48 @@
 
 package bg.projectoria.appinspector;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 
-public class AppDetails extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class AppDetails extends SherlockFragmentActivity {
 	
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if(savedInstanceState == null) {
+        	AppDetailsFragment fragment = new AppDetailsFragment();
+        	getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).commit();
+        }
+	}
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	menu
+    	.add(Menu.CATEGORY_CONTAINER,
+    			About.MENU_ABOUT,
+    			Menu.FIRST,
+    			"About")
+    			.setIcon(android.R.drawable.ic_menu_info_details)
+    			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	return true;
+    }
 
-        AppDetailsFragment fragment = new AppDetailsFragment();
-        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).commit();
-	}    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case About.MENU_ABOUT:
+    		startActivity(new Intent(this, About.class));
+    		return true;
+    	}
+    	return false;
+    }
 
 }

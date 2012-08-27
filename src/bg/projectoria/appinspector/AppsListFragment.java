@@ -9,7 +9,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,17 +17,32 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AppsListFragment extends ListFragment {
+import com.actionbarsherlock.app.SherlockListFragment;
+
+public class AppsListFragment extends SherlockListFragment {
 
 	PackageManager pman = null;
-	private int currentPosition = 0;
+	private int currentPosition = -1;
 	private OnAppSelectedListener appSelectedListener = null;
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+		try {
+			appSelectedListener = (OnAppSelectedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(getSherlockActivity().toString() + 
+					": must implement OnAppSelectedListener"
+					);
+		}
+	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-        pman = getActivity().getPackageManager();
+        pman = getSherlockActivity().getPackageManager();
         
         List<ApplicationInfo> apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
         Collections.sort(apps, new LabelComparator());
@@ -40,22 +54,10 @@ public class AppsListFragment extends ListFragment {
 
         if(savedInstanceState != null) {
         	currentPosition = savedInstanceState.getInt("currentChoice");
-        	showDetails(currentPosition);
+        	if(currentPosition > 0)
+        		showDetails(currentPosition, true);
         }
         
-	}
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-		try {
-			appSelectedListener = (OnAppSelectedListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(getActivity().toString() + 
-										": must implement OnAppSelectedListener"
-										);
-		}
 	}
 	
 	@Override
@@ -64,55 +66,26 @@ public class AppsListFragment extends ListFragment {
 		outState.putInt("currentChoice", currentPosition);
 	}
 	
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//			Bundle savedInstanceState) {
-//	
-//		return super.onCreateView(inflater, container, savedInstanceState);
-//	}
-	
-	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//		menu
-//			.add(Menu.CATEGORY_CONTAINER,
-//					About.MENU_ABOUT,
-//					Menu.FIRST,
-//					"About")
-//					.setIcon(android.R.drawable.ic_menu_info_details);
-//		return true;
-//	}
-//    
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case About.MENU_ABOUT:
-//			startActivity(new Intent(this, About.class));
-//			return true;
-//		}
-//		return false;
-//	}
-    
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-   		showDetails(position);
+    	currentPosition = position;
+   		showDetails(position, false);
     }
     
-	private void showDetails(int position) {
+	private void showDetails(int position, boolean savedState) {
 		ApplicationInfo app = (ApplicationInfo) getListView().getItemAtPosition(position);
 		Uri uri = (new Uri.Builder())
 				.scheme("app-inspector")
 				.authority(app.packageName)
 				.build();
 		
-		appSelectedListener.onAppSelected(uri);
+		appSelectedListener.onAppSelected(uri, savedState);
 	}
 	
 	private class AppAdapter extends ArrayAdapter<ApplicationInfo> {
 	
 		public AppAdapter(List<ApplicationInfo> apps) {
-			super(getActivity(), R.layout.app_item, R.id.label, apps);
+			super(getSherlockActivity(), R.layout.app_item, R.id.label, apps);
 		}
 		
 		@Override
@@ -141,7 +114,7 @@ public class AppsListFragment extends ListFragment {
 	}
 	
 	public interface OnAppSelectedListener {
-		public void onAppSelected(Uri uri);
+		public void onAppSelected(Uri uri, boolean savedState);
 	}
 
 }
