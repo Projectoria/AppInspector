@@ -122,6 +122,35 @@
 			/>
 			
 		</LinearLayout>
+
+	<include layout="@layout/spacer" />
+		
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center_horizontal">
+
+      <TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="contains code from ActionBarSherlock"
+			/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="http://actionbarsherlock.com"
+			/>
+
+      <TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="by Jake Wharton"
+			/>
+
+    </LinearLayout>
 	
 	<include layout="@layout/spacer" />	
 	
