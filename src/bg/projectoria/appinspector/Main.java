@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011  Projectoria Ltd.
+ * Copyright (C) 2011-2012  Projectoria Ltd.
  * This file is part of App Inspector.
  *
  * App Inspector is free software: you can redistribute it and/or modify
