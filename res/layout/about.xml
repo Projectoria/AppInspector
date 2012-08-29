@@ -72,6 +72,19 @@
 			android:autoLink="all"
 			android:text="&lt;doganov@projectoria.bg&gt;"
 			/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Peter Pantaleev"
+			/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="&lt;peter@projectoria.bg&gt;"
+			/>
 			
 		</LinearLayout>
 		
