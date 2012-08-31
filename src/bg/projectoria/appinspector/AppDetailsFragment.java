@@ -29,8 +29,10 @@ public class AppDetailsFragment extends SherlockListFragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		this.setListShownNoAnimation(true);
-		getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
-
+		ListView detailsList = getListView(); 
+		detailsList.setChoiceMode(ListView.CHOICE_MODE_NONE);
+		detailsList.setSelector(R.drawable.list_item_selector_none);
+		
         Intent i = getSherlockActivity().getIntent();
         Uri uri = i.getData();
         

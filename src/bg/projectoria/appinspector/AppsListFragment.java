@@ -42,6 +42,10 @@ public class AppsListFragment extends SherlockListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
+		ListView appsList = getListView(); 
+		appsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		appsList.setSelector(R.drawable.list_item_selector);
+        
         pman = getSherlockActivity().getPackageManager();
         
         List<ApplicationInfo> apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -50,8 +54,6 @@ public class AppsListFragment extends SherlockListFragment {
         ListAdapter adapter = new AppAdapter(apps);
         setListAdapter(adapter);
         
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
         if(savedInstanceState != null) {
         	currentPosition = savedInstanceState.getInt("currentChoice");
         	if(currentPosition > 0)
@@ -69,6 +71,7 @@ public class AppsListFragment extends SherlockListFragment {
     @Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
     	currentPosition = position;
+    	l.setItemChecked(position, true);
    		showDetails(position, false);
     }
     

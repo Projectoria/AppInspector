@@ -40,11 +40,11 @@ public class Main extends SherlockFragmentActivity implements OnAppSelectedListe
         setContentView(R.layout.main);
         
         detailsFragment = (AppDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.app_details);
-        
         View detailsView = findViewById(R.id.app_details);
         
         if(detailsView != null && detailsView.getVisibility() == View.VISIBLE){
         	isDual = true;
+        	detailsFragment.getListView().setBackgroundResource(R.drawable.details_background);
         }
     }
     

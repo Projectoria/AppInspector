@@ -9,7 +9,7 @@
         android:name="bg.projectoria.appinspector.AppsListFragment"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="0dp"
         android:layout_weight="1" />
     
     <fragment
