@@ -44,7 +44,7 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Copyright © 2011 Projectoria Ltd." />
+		android:text="Copyright © 2011-2012 Projectoria Ltd." />
 		
 	<include layout="@layout/spacer" />
 	
@@ -72,6 +72,19 @@
 			android:autoLink="all"
 			android:text="&lt;doganov@projectoria.bg&gt;"
 			/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Peter Pantaleev"
+			/>
+		
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="&lt;peter@projectoria.bg&gt;"
+			/>
 			
 		</LinearLayout>
 		
@@ -86,29 +99,52 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="promo image for Android Market"
+			android:text="artwork by"
 			/>
 		
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="designed by"
-			/>
-			
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Wojciech Walczyszyn"
+			android:text="Irena Nikolova"
 			/>
 		
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:autoLink="all"
-			android:text="http://wwalczyszyn.deviantart.com"
+			android:text="&lt;irena@projectoria.bg&gt;"
 			/>
 			
 		</LinearLayout>
+
+	<include layout="@layout/spacer" />
+		
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:gravity="center_horizontal">
+
+      <TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="contains code from ActionBarSherlock"
+			/>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:autoLink="all"
+			android:text="http://actionbarsherlock.com"
+			/>
+
+      <TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="by Jake Wharton"
+			/>
+
+    </LinearLayout>
 	
 	<include layout="@layout/spacer" />	
 	

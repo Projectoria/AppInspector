@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011  Projectoria Ltd.
+ * Copyright (C) 2011-2012  Projectoria Ltd.
  * This file is part of App Inspector.
  *
  * App Inspector is free software: you can redistribute it and/or modify
@@ -18,131 +18,71 @@
 
 package bg.projectoria.appinspector;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import android.app.ListActivity;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
-public class Main extends ListActivity {
+import bg.projectoria.appinspector.AppsListFragment.OnAppSelectedListener;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class Main extends SherlockFragmentActivity implements OnAppSelectedListener{
 	
-	PackageManager pman = null;
+	private boolean isDual = false;
+	private AppDetailsFragment detailsFragment = null;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.main);
+        setContentView(R.layout.main);
         
-        pman = getPackageManager();
+        detailsFragment = (AppDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.app_details);
+        View detailsView = findViewById(R.id.app_details);
         
-        List<ApplicationInfo> apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
-        Collections.sort(apps, new LabelComparator());
-        
-        ListAdapter adapter = new AppAdapter(apps);
-        setListAdapter(adapter);
-        
-        AnimationSet set = new AnimationSet(true);
+        if(detailsView != null && detailsView.getVisibility() == View.VISIBLE){
+        	isDual = true;
+        	detailsFragment.getListView().setBackgroundResource(R.drawable.details_background);
+        }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	menu
+    	.add(Menu.CATEGORY_CONTAINER,
+    			About.MENU_ABOUT,
+    			Menu.FIRST,
+    			"About")
+    			.setIcon(android.R.drawable.ic_menu_info_details)
+    			.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	return true;
+    }
 
-        Animation animation = new AlphaAnimation(0.0f, 1.0f);
-        animation.setDuration(50);
-        set.addAnimation(animation);
-
-        animation = new TranslateAnimation(
-            Animation.RELATIVE_TO_SELF, 0.0f,Animation.RELATIVE_TO_SELF, 0.0f,
-            Animation.RELATIVE_TO_SELF, -1.0f,Animation.RELATIVE_TO_SELF, 0.0f
-        );
-        animation.setDuration(100);
-        set.addAnimation(animation);
-
-        LayoutAnimationController controller =
-        	new LayoutAnimationController(set, 0.5f);
-        ListView listView = getListView();        
-        listView.setLayoutAnimation(controller);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case About.MENU_ABOUT:
+    		startActivity(new Intent(this, About.class));
+    		return true;
+    	}
+    	return false;
     }
     
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu
-			.add(Menu.CATEGORY_CONTAINER,
-					About.MENU_ABOUT,
-					Menu.FIRST,
-					"About")
-					.setIcon(android.R.drawable.ic_menu_info_details);
-		return true;
-	}
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case About.MENU_ABOUT:
-			startActivity(new Intent(this, About.class));
-			return true;
-		}
-		return false;
-	}
-    
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-    	ApplicationInfo app = (ApplicationInfo) l.getItemAtPosition(position);
-    	Uri uri = (new Uri.Builder())
-    		.scheme("app-inspector")
-    		.authority(app.packageName)
-    		.build();
-    	
-    	Intent i = new Intent(this, AppDetails.class);
-    	i.setData(uri);
-    	startActivity(i);
-    }
-    
-    private class AppAdapter extends ArrayAdapter<ApplicationInfo> {
-
-		public AppAdapter(List<ApplicationInfo> apps) {
-			super(Main.this, R.layout.app_item, R.id.label, apps);
+	public void onAppSelected(Uri uri, boolean savedState) {
+		if(!isDual){
+			if(!savedState) {
+				Intent i = new Intent(this, AppDetails.class);
+				i.setData(uri);
+				startActivity(i);
+			}
+			return;
 		}
 		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = super.getView(position, convertView, parent);
-			ApplicationInfo app = getItem(position);
-			
-			ImageView icon = (ImageView) view.findViewById(R.id.icon);
-			TextView label = (TextView) view.findViewById(R.id.label);
-			icon.setImageDrawable(pman.getApplicationIcon(app));
-			label.setText(pman.getApplicationLabel(app));
-			return view;
-		}
-    	
-    }
-    
-    private class LabelComparator implements Comparator<ApplicationInfo> {
-
-		@Override
-		public int compare(ApplicationInfo app1, ApplicationInfo app2) {
-			String label1 = pman.getApplicationLabel(app1).toString();
-			String label2 = pman.getApplicationLabel(app2).toString();
-			return label1.compareTo(label2);
-		}
-    	
-    }
-}
+		detailsFragment.showDetails(uri);
+	}
+}    
