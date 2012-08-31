@@ -99,26 +99,20 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="promo image for Android Market"
+			android:text="artwork by"
 			/>
 		
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="designed by"
-			/>
-			
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Wojciech Walczyszyn"
+			android:text="Irena Nikolova"
 			/>
 		
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:autoLink="all"
-			android:text="http://wwalczyszyn.deviantart.com"
+			android:text="&lt;irena@projectoria.bg&gt;"
 			/>
 			
 		</LinearLayout>
