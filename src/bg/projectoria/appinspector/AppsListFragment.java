@@ -18,6 +18,7 @@
 
 package bg.projectoria.appinspector;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +28,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -42,11 +46,13 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
-public class AppsListFragment extends SherlockListFragment {
+public class AppsListFragment extends SherlockListFragment
+    implements LoaderManager.LoaderCallbacks<List<ApplicationInfo>> {
 
 	PackageManager pman = null;
 	private int currentPosition = -1;
 	private OnAppSelectedListener appSelectedListener = null;
+    private AppAdapter adapter;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -70,12 +76,12 @@ public class AppsListFragment extends SherlockListFragment {
 		appsList.setSelector(R.drawable.list_item_selector);
         
         pman = getSherlockActivity().getPackageManager();
-        
-        List<ApplicationInfo> apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
-        Collections.sort(apps, new LabelComparator());
-        
-        ListAdapter adapter = new AppAdapter(apps);
+                
+        adapter = new AppAdapter(new ArrayList<ApplicationInfo>());
         setListAdapter(adapter);
+
+        // Start out with a progress indicator
+        setListShown(false);
 
         AnimationSet set = new AnimationSet(true);
 
@@ -94,12 +100,12 @@ public class AppsListFragment extends SherlockListFragment {
         	new LayoutAnimationController(set, 0.5f);
         ListView listView = getListView();        
         listView.setLayoutAnimation(controller);
-        
-        if(savedInstanceState != null) {
+
+        getActivity().getSupportLoaderManager()
+            .initLoader(0, null, this);
+
+        if (savedInstanceState != null)
         	currentPosition = savedInstanceState.getInt("currentChoice");
-        	if(currentPosition > 0)
-        		showDetails(currentPosition, true);
-        }
         
 	}
 	
@@ -125,6 +131,72 @@ public class AppsListFragment extends SherlockListFragment {
 		
 		appSelectedListener.onAppSelected(uri, savedState);
 	}
+
+    @Override
+    public Loader<List<ApplicationInfo>> onCreateLoader(int id, Bundle args) {
+        return new AppLoader(getSherlockActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<ApplicationInfo>> loader,
+                               List<ApplicationInfo> data) {
+
+        adapter.clear();
+        adapter.addAll(data);
+        adapter.notifyDataSetChanged();
+
+        if (isResumed())
+            setListShown(true);
+        else
+            setListShownNoAnimation(true);
+
+        if ((currentPosition != -1) && (currentPosition < adapter.getCount()))
+            showDetails(currentPosition, true);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<ApplicationInfo>> loader) {
+        adapter.clear();
+    }
+
+    private static class AppLoader
+        extends AsyncTaskLoader<List<ApplicationInfo>> {
+
+        private List<ApplicationInfo> cache;
+
+        private AppLoader(Activity context) {
+            super(context);
+        }
+
+        @Override
+        public List<ApplicationInfo> loadInBackground() {
+            PackageManager pman = getContext().getPackageManager();
+            List<ApplicationInfo> apps =
+                pman.getInstalledApplications(PackageManager.GET_META_DATA);
+            Collections.sort(apps, new LabelComparator(pman));
+            
+            return apps;
+        }
+
+        @Override
+        public void deliverResult(List<ApplicationInfo> data) {
+            if (isReset())
+                return;
+
+            if (isStarted())
+                super.deliverResult(data);
+
+            cache = data;
+        }
+
+        @Override
+        protected void onStartLoading() {
+            if (cache != null)
+                deliverResult(cache);
+            else
+                forceLoad();
+        }
+    }
 	
 	private class AppAdapter extends ArrayAdapter<ApplicationInfo> {
 	
@@ -146,7 +218,14 @@ public class AppsListFragment extends SherlockListFragment {
 		
 	}
 	
-	private class LabelComparator implements Comparator<ApplicationInfo> {
+	private static class LabelComparator
+        implements Comparator<ApplicationInfo> {
+
+        private final PackageManager pman;
+
+        private LabelComparator(PackageManager pman) {
+            this.pman = pman;
+        }
 	
 		@Override
 		public int compare(ApplicationInfo app1, ApplicationInfo app2) {
