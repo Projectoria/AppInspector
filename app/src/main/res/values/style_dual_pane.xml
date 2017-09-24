@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DualPane">
+        <item name="android:divider">?android:attr/dividerHorizontal</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+</resources>

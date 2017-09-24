@@ -1,0 +1,40 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    style="@style/DualPane"
+    tools:context=".MainActivity"
+    >
+
+    <!--
+    This layout is a two-pane layout for the Apps
+    master/detail flow.
+    -->
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/app_list"
+        android:name=".AppListFragment"
+        android:layout_width="@dimen/item_width"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:elevation="6dp"
+        android:background="?android:attr/colorBackground"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".MainActivity"
+        tools:listitem="@layout/app_list_item"
+        />
+
+    <FrameLayout
+        android:id="@+id/app_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        />
+
+</LinearLayout>
