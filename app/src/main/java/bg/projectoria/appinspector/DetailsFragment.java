@@ -97,12 +97,12 @@ public class DetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.details_fragment, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.app_detail_list);
-        setupRecyclerView(recyclerView);
+        setup(recyclerView);
 
         return rootView;
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setup(@NonNull RecyclerView recyclerView) {
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 getContext(),
                 DividerItemDecoration.VERTICAL));

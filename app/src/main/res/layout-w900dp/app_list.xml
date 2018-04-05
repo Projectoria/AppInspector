@@ -11,7 +11,7 @@
     >
 
     <!--
-    This layout is a two-pane layout for the Apps
+    This layout is a two-pane layout for the apps
     master/detail flow.
     -->
 
@@ -25,7 +25,7 @@
         android:scrollbars="vertical"
         android:elevation="6dp"
         android:background="?android:attr/colorBackground"
-        app:layoutManager="LinearLayoutManager"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context=".MainActivity"
         tools:listitem="@layout/app_list_item"
         />

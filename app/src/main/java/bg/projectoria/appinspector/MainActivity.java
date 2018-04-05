@@ -1,9 +1,8 @@
 package bg.projectoria.appinspector;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
- * An activity representing a list of Apps. This activity
+ * An activity representing a list of apps. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
  * lead to a {@link DetailsActivity} representing
@@ -72,15 +70,24 @@ public class MainActivity extends AppCompatActivity {
         selection = new Selection(savedInstanceState);
 
         RecyclerView recyclerView = findViewById(R.id.app_list);
-        setupRecyclerView(recyclerView);
+        View progress = findViewById(R.id.progress);
+        setup(recyclerView, progress);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setup(@NonNull RecyclerView recyclerView, @NonNull View progress) {
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 this,
                 DividerItemDecoration.VERTICAL));
-        adapter = new AppAdapter(getPackageManager(), selection, this, twoPane);
+        adapter = new AppAdapter(selection, this, twoPane);
         recyclerView.setAdapter(adapter);
+
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.get().observe(this, apps -> {
+            if (apps != null) {
+                progress.setVisibility(View.GONE);
+            }
+            adapter.setApps(apps);
+        });
     }
 
     @Override
@@ -108,11 +115,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
-        private final PackageManager pman;
         private final Selection selection;
         private final MainActivity parent;
-        private final List<ApplicationInfo> apps;
         private final boolean twoPane;
+        private List<AppStub> apps;
 
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -120,31 +126,34 @@ public class MainActivity extends AppCompatActivity {
                 ViewHolder holder = (ViewHolder) view.getTag();
                 int position = holder.getAdapterPosition();
                 selection.set(position);
-                ApplicationInfo app = apps.get(position);
+                AppStub stub = apps.get(position);
                 if (twoPane) {
                     parent.getSupportFragmentManager()
                             .beginTransaction()
                             .replace(
                                     R.id.app_detail_container,
-                                    DetailsFragment.make(app.packageName))
+                                    DetailsFragment.make(stub.packageName))
                             .commit();
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, DetailsActivity.class);
-                    intent.putExtra(DetailsFragment.PACKAGE_NAME, app.packageName);
+                    intent.putExtra(DetailsFragment.PACKAGE_NAME, stub.packageName);
 
                     context.startActivity(intent);
                 }
             }
         };
 
-        AppAdapter(PackageManager pman, Selection selection, MainActivity parent, boolean twoPane) {
-            this.pman = pman;
+        AppAdapter(Selection selection, MainActivity parent, boolean twoPane) {
             this.selection = selection;
-            this.apps = pman.getInstalledApplications(PackageManager.GET_META_DATA);
-            Collections.sort(this.apps, new LabelComparator());
             this.parent = parent;
             this.twoPane = twoPane;
+            this.apps = Collections.emptyList();
+        }
+
+        void setApps(List<AppStub> apps) {
+            this.apps = apps;
+            notifyDataSetChanged();
         }
 
         @Override
@@ -157,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            ApplicationInfo app = apps.get(position);
-            holder.icon.setImageDrawable(pman.getApplicationIcon(app));
-            holder.label.setText(pman.getApplicationLabel(app));
+            AppStub stub = apps.get(position);
+            holder.icon.setImageDrawable(stub.icon);
+            holder.label.setText(stub.label);
 
             holder.itemView.setTag(holder);
             holder.itemView.setOnClickListener(onClickListener);
@@ -183,17 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 icon = view.findViewById(R.id.icon);
                 label = view.findViewById(R.id.label);
             }
-        }
-
-        private class LabelComparator implements Comparator<ApplicationInfo> {
-
-            @Override
-            public int compare(ApplicationInfo app1, ApplicationInfo app2) {
-                String label1 = pman.getApplicationLabel(app1).toString();
-                String label2 = pman.getApplicationLabel(app2).toString();
-                return label1.compareTo(label2);
-            }
-
         }
     }
 
