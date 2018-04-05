@@ -1,11 +1,11 @@
 package bg.projectoria.appinspector;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -47,17 +47,18 @@ public class DetailsFragment extends Fragment {
     public DetailsFragment() {
     }
 
-    @SuppressLint("ValidFragment")
-    public DetailsFragment(String packageName) {
+    public static @NonNull DetailsFragment make(@NonNull String packageName) {
+        DetailsFragment result = new DetailsFragment();
         Bundle args = new Bundle();
         args.putString(
                 DetailsFragment.PACKAGE_NAME,
                 packageName);
-        setArguments(args);
+        result.setArguments(args);
+        return result;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(PACKAGE_NAME)) {
@@ -83,9 +84,10 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
 
         CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
@@ -127,14 +129,15 @@ public class DetailsFragment extends Fragment {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(android.R.layout.simple_list_item_2, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Pair<String,String> entry = entries.get(position);
             holder.label.setText(entry.first);
             holder.value.setText(entry.second);

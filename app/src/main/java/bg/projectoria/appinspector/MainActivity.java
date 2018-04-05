@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         private final MainActivity parent;
         private final List<ApplicationInfo> apps;
         private final boolean twoPane;
-        private int selected;
 
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             .beginTransaction()
                             .replace(
                                     R.id.app_detail_container,
-                                    new DetailsFragment(app.packageName))
+                                    DetailsFragment.make(app.packageName))
                             .commit();
                 } else {
                     Context context = view.getContext();
@@ -149,14 +148,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @NonNull
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.app_list_item, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ApplicationInfo app = apps.get(position);
             holder.icon.setImageDrawable(pman.getApplicationIcon(app));
             holder.label.setText(pman.getApplicationLabel(app));

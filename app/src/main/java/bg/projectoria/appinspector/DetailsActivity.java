@@ -1,6 +1,7 @@
 package bg.projectoria.appinspector;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,7 @@ import android.support.v7.widget.Toolbar;
 public class DetailsActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
@@ -53,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
             String packageName = getIntent().getStringExtra(DetailsFragment.PACKAGE_NAME);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.app_detail_container, new DetailsFragment(packageName))
+                    .add(R.id.app_detail_container, DetailsFragment.make(packageName))
                     .commit();
         }
     }
