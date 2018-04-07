@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.get().observe(this, apps -> {
+        viewModel.getApps().observe(this, apps -> {
             if (apps != null) {
                 progress.setVisibility(View.GONE);
             }
