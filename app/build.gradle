@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
+
     defaultConfig {
         applicationId "bg.projectoria.appinspector"
         minSdkVersion 15
@@ -11,6 +12,7 @@ android {
         versionName "2.0-dev"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             debuggable false
@@ -25,6 +27,11 @@ android {
             minifyEnabled true
             useProguard false
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
