@@ -1,8 +1,8 @@
 package bg.projectoria.appinspector;
 
-import android.graphics.drawable.Drawable;
-
 import java.util.Comparator;
+
+import android.graphics.drawable.Drawable;
 
 public class AppStub {
 
