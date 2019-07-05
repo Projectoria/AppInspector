@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
 
     defaultConfig {
         applicationId "bg.projectoria.appinspector"
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 29
         versionCode 5
         versionName "2.0-dev"
         multiDexEnabled false
