@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="@android:dimen/app_icon_size"
-        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_gravity="center_vertical"
         android:scaleType="fitCenter"
         />
@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/text_margin"
         android:layout_gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
         />
 
 </LinearLayout>
