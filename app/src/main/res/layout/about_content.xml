@@ -28,7 +28,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Copyright © 2011-2018 Projectoria Ltd." />
+        android:text="Copyright © 2011-2019 Projectoria Ltd." />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,21 +46,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autoLink="all"
-        android:text="&lt;doganov@projectoria.bg&gt;"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Peter Pantaleev"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="all"
-        android:text="&lt;peter@projectoria.bg&gt;"
         />
 
     <TextView
@@ -74,13 +60,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Irena Nikolova"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="all"
-        android:text="&lt;irena@projectoria.bg&gt;"
         />
 
     <LinearLayout
