@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private MainViewModel viewModel;
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
         setContentView(R.layout.main_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -82,11 +86,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new AppAdapter(selection, this, twoPane);
         recyclerView.setAdapter(adapter);
 
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getApps().observe(this, apps -> {
-            if (apps != null) {
-                progress.setVisibility(View.GONE);
-            }
+            progress.setVisibility(apps.isEmpty() ? View.VISIBLE : View.GONE);
             adapter.setApps(apps);
         });
     }
@@ -116,10 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
-        private final Selection selection;
-        private final MainActivity parent;
+        private final @NonNull Selection selection;
+        private final @NonNull MainActivity parent;
         private final boolean twoPane;
-        private List<AppStub> apps;
+        private @NonNull List<AppStub> apps;
 
         private final View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        AppAdapter(Selection selection, MainActivity parent, boolean twoPane) {
+        AppAdapter(@NonNull Selection selection, @NonNull MainActivity parent, boolean twoPane) {
             this.selection = selection;
             this.parent = parent;
             this.twoPane = twoPane;

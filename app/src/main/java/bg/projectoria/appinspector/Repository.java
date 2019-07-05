@@ -11,28 +11,35 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class Repository {
 
-    private final Application application;
-    private MutableLiveData<List<AppStub>> apps;
+    private final @NonNull Application application;
+    private final @NonNull MutableLiveData<List<AppStub>> apps = new MutableLiveData<>();
+    private boolean loadInitiated;
 
-    public Repository(Application application) {
+    @MainThread
+    public Repository(@NonNull Application application) {
         this.application = application;
+        this.apps.setValue(Collections.emptyList());
     }
 
+    @MainThread
     @NonNull
     public LiveData<List<AppStub>> getApps() {
-        if (apps == null) {
-            apps = new MutableLiveData<>();
+        if (!loadInitiated) {
+            loadInitiated = true;
             load();
         }
         return apps;
     }
 
+    @MainThread
     private void load() {
         new LoadTask(application, apps).execute();
     }
@@ -41,9 +48,9 @@ public class Repository {
 
         private static final String TAG = "LoadTask";
 
-        private final Application application;
+        private final @NonNull Application application;
 
-        private final MutableLiveData<List<AppStub>> commitResult;
+        private final @NonNull MutableLiveData<List<AppStub>> commitResult;
 
         LoadTask(
                 @NonNull Application application,
@@ -54,6 +61,7 @@ public class Repository {
         }
 
         @Override
+        @WorkerThread
         protected List<AppStub> doInBackground(Void... voids) {
             Log.d(TAG,"Start doInBackground...");
 
@@ -76,6 +84,7 @@ public class Repository {
         }
 
         @Override
+        @MainThread
         protected void onPostExecute(List<AppStub> appStubs) {
             commitResult.setValue(appStubs);
         }
