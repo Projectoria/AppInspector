@@ -3,6 +3,9 @@ package bg.projectoria.appinspector;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -13,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +44,8 @@ public class DetailsFragment extends Fragment {
         String appLabel;
     }
 
+    private ClipboardManager clipboard;
+    private Context appCtx;
     private Model model;
 
     /**
@@ -86,6 +92,14 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        appCtx = context.getApplicationContext();
+    }
+
+    @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
@@ -108,14 +122,20 @@ public class DetailsFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 getContext(),
                 DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(new DetailAdapter(model));
+        recyclerView.setAdapter(new DetailAdapter(clipboard, appCtx, model));
     }
 
     private static class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
 
+        private final ClipboardManager clipboard;
+        private final Context appCtx;
+
         private final List<Pair<String, String>> entries = new ArrayList<>();
 
-        DetailAdapter(Model model) {
+        DetailAdapter(ClipboardManager clipboard, Context appCtx, Model model) {
+            this.clipboard = clipboard;
+            this.appCtx = appCtx;
+
             entry("Label", model.appLabel);
             entry("Package name", model.app.packageName);
             entry("Version name", model.pkg.versionName);
@@ -135,14 +155,21 @@ public class DetailsFragment extends Fragment {
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(android.R.layout.simple_list_item_2, parent, false);
+            view.setBackgroundResource(R.drawable.potent_item_background);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Pair<String,String> entry = entries.get(position);
+            Pair<String, String> entry = entries.get(position);
             holder.label.setText(entry.first);
             holder.value.setText(entry.second);
+            holder.root.setOnClickListener(view -> {
+                clipboard.setPrimaryClip(ClipData.newPlainText(entry.first, entry.second));
+                Toast
+                        .makeText(appCtx, R.string.clipboard_copy, Toast.LENGTH_SHORT)
+                        .show();
+            });
         }
 
         @Override
@@ -151,13 +178,15 @@ public class DetailsFragment extends Fragment {
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
+            final View root;
             final TextView label;
             final TextView value;
 
-            ViewHolder(View view) {
-                super(view);
-                label = view.findViewById(android.R.id.text1);
-                value = view.findViewById(android.R.id.text2);
+            ViewHolder(View root) {
+                super(root);
+                this.root = root;
+                this.label = root.findViewById(android.R.id.text1);
+                this.value = root.findViewById(android.R.id.text2);
             }
         }
     }
