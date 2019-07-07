@@ -6,7 +6,6 @@
     android:orientation="horizontal"
     android:padding="16dp"
     android:background="@drawable/potent_item_background"
-    style="@style/PotentListItem"
     >
 
     <ImageView
