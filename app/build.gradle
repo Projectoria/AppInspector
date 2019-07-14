@@ -11,22 +11,23 @@ android {
         versionCode 6
         versionName "2.0"
         multiDexEnabled false
+        resConfigs 'en'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             debuggable false
+            shrinkResources true
             minifyEnabled true
-            useProguard false
-            //minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
         debug {
             applicationIdSuffix '.debug'
             debuggable true
+            shrinkResources false
             minifyEnabled false
-            useProguard false
         }
     }
 
