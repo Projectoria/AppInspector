@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,8 +45,8 @@ public class DetailsFragment extends Fragment {
         String appLabel;
     }
 
-    private ClipboardManager clipboard;
     private Context appCtx;
+    private ClipboardManager clipboard;
     private Model model;
 
     /**
@@ -66,37 +67,40 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(PACKAGE_NAME)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            String packageName = getArguments().getString(PACKAGE_NAME);
-            PackageManager pman = getActivity().getPackageManager();
-
-            model = new Model();
-
-            try {
-                model.app = pman.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-                model.pkg = pman.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-                model.appLabel = String.valueOf(pman.getApplicationLabel(model.app));
-            }
-            catch (PackageManager.NameNotFoundException e) {
-                // FIXME
-                Log.e(TAG, "error", e);
-                return;
-            }
-        }
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         appCtx = context.getApplicationContext();
+        clipboard = (ClipboardManager) appCtx.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args == null) {
+            throw new IllegalStateException("DetailsFragment.onCreate called with null arguments");
+        }
+
+        String packageName = args.getString(PACKAGE_NAME);
+        if (packageName == null) {
+            throw new IllegalStateException("DetailsFragment.onCreate called without package name");
+        }
+
+        PackageManager packMan = appCtx.getPackageManager();
+
+        model = new Model();
+
+        try {
+            model.app = packMan.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            model.pkg = packMan.getPackageInfo(packageName, PackageManager.GET_META_DATA);
+            model.appLabel = String.valueOf(packMan.getApplicationLabel(model.app));
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            // FIXME
+            Log.e(TAG, "error", e);
+        }
     }
 
     @Override
@@ -105,24 +109,25 @@ public class DetailsFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
-        if (appBarLayout != null) {
-            appBarLayout.setTitle(model.appLabel);
-        }
-
         View rootView = inflater.inflate(R.layout.details_fragment, container, false);
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.app_detail_list);
-        setup(recyclerView);
-
-        return rootView;
-    }
-
-    private void setup(@NonNull RecyclerView recyclerView) {
+        RecyclerView recyclerView = ViewCompat.requireViewById(rootView, R.id.app_detail_list);
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 getContext(),
                 DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(new DetailAdapter(clipboard, appCtx, model));
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        CollapsingToolbarLayout appBarLayout = requireActivity().findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(model.appLabel);
+        }
     }
 
     private static class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
