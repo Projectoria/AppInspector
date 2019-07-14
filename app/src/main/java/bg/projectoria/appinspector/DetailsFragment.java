@@ -47,6 +47,7 @@ public class DetailsFragment extends Fragment {
 
     private Context appCtx;
     private ClipboardManager clipboard;
+    private String packageName;
     private Model model;
 
     /**
@@ -83,19 +84,21 @@ public class DetailsFragment extends Fragment {
             throw new IllegalStateException("DetailsFragment.onCreate called with null arguments");
         }
 
-        String packageName = args.getString(PACKAGE_NAME);
+        packageName = args.getString(PACKAGE_NAME);
         if (packageName == null) {
             throw new IllegalStateException("DetailsFragment.onCreate called without package name");
         }
 
         PackageManager packMan = appCtx.getPackageManager();
 
-        model = new Model();
+        model = null;
 
         try {
-            model.app = packMan.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-            model.pkg = packMan.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-            model.appLabel = String.valueOf(packMan.getApplicationLabel(model.app));
+            Model m = new Model();
+            m.app = packMan.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            m.pkg = packMan.getPackageInfo(packageName, PackageManager.GET_META_DATA);
+            m.appLabel = String.valueOf(packMan.getApplicationLabel(m.app));
+            model = m; // commit the model
         }
         catch (PackageManager.NameNotFoundException e) {
             // FIXME
@@ -110,12 +113,17 @@ public class DetailsFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.details_fragment, container, false);
-
-        RecyclerView recyclerView = ViewCompat.requireViewById(rootView, R.id.app_detail_list);
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                getContext(),
-                DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(new DetailAdapter(clipboard, appCtx, model));
+        if (model != null) {
+            RecyclerView recyclerView = ViewCompat.requireViewById(rootView, R.id.app_detail_list);
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.addItemDecoration(new DividerItemDecoration(
+                    getContext(),
+                    DividerItemDecoration.VERTICAL));
+            recyclerView.setAdapter(new DetailAdapter(clipboard, appCtx, model));
+        } else {
+            View noData = ViewCompat.requireViewById(rootView, R.id.no_data);
+            noData.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }
@@ -126,7 +134,8 @@ public class DetailsFragment extends Fragment {
 
         CollapsingToolbarLayout appBarLayout = requireActivity().findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
-            appBarLayout.setTitle(model.appLabel);
+            String title = (model != null)? model.appLabel : packageName;
+            appBarLayout.setTitle(title);
         }
     }
 
@@ -137,7 +146,7 @@ public class DetailsFragment extends Fragment {
 
         private final List<Pair<String, String>> entries = new ArrayList<>();
 
-        DetailAdapter(ClipboardManager clipboard, Context appCtx, Model model) {
+        DetailAdapter(ClipboardManager clipboard, Context appCtx, @NonNull Model model) {
             this.clipboard = clipboard;
             this.appCtx = appCtx;
 

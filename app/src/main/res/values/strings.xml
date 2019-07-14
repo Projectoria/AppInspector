@@ -22,4 +22,6 @@
     </string>
 
     <string name="clipboard_copy">Copied to clipboard</string>
+
+    <string name="pkg_not_found">Package not found.\nProbably this app was recently uninstalled.</string>
 </resources>
